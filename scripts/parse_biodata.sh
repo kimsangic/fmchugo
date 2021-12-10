@@ -30,25 +30,25 @@ gets() {
   printf -v "$_ref" '%s' "${_result[*]}"
 }
 
-echo "Check program requirements..."
-(
-  set +e
-  programs=( sed realpath find )
-  missing=0
-  for i in ${programs[@]}; do
-      command -v $i 2&> /dev/null
-      if [ $? -eq 0 ]; then
-          echo " * Found $i"
-      else
-          echo " * ERROR: missing $i"
-          missing=1
-      fi
-  done
-  if [[ "$missing" -ne 0 ]]; then
-      echo "Missing required commands"
-      exit 1
-  fi
-)
+# echo "Check program requirements..."
+# (
+#   set +e
+#   programs=( sed realpath find )
+#   missing=0
+#   for i in ${programs[@]}; do
+#       command -v $i 2&> /dev/null
+#       if [ $? -eq 0 ]; then
+#           echo " * Found $i"
+#       else
+#           echo " * ERROR: missing $i"
+#           missing=1
+#       fi
+#   done
+#   if [[ "$missing" -ne 0 ]]; then
+#       echo "Missing required commands"
+#       exit 1
+#   fi
+# )
 
 usage() {
   echo "`basename $0`"
