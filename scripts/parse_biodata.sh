@@ -104,7 +104,7 @@ fi
 
 echo "INPUT DIRECTORY:      $INPUT_DIR"
 echo "OUTPUT DIRECTORY:     $OUTPUT_DIR"
-if [ $IGNORE_PROMPT != "true" ]; then
+if [ $IGNORE_PROMPT -ne "true" ]; then
   read -p "Are you sure you want to Proceed [y/N]?"
   if ! [[ "$REPLY" =~ ^[Yy]$ ]]; then
       echo "Maybe next time!"
