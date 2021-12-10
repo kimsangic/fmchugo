@@ -32,3 +32,4 @@ steps:
 
 - script: |
     scripts/parse_biodata.sh -d $(pwd)/biodata/bacteria/data -o content
+    ls -la content/bacteria

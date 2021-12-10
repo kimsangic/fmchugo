@@ -3,7 +3,6 @@
 # This script will parse a tree structure that is passed in on the command line looking for datasets
 
 set -o errexit  # exit if any statement returns a non-true return value
-shopt -s expand_aliases
 
 # geta and gets are functions for printing out Yaml in Bash less than v4
 geta() {
