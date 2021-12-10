@@ -31,5 +31,5 @@ steps:
   displayName: 'Run a multi-line script'
 
 - script: |
-    scripts/parse_biodata.sh -d $(pwd)/biodata/bacteria/data -o content -y
+    scripts/parse_biodata.sh -d $(pwd)/biodata -o content -y
     ls -la content/bacteria
