@@ -33,7 +33,7 @@ gets() {
 echo "Check program requirements..."
 (
   set +e
-  programs=(sed realpath find)
+  programs=( sed realpath find )
   missing=0
   for i in ${programs[@]}; do
       command -v $i 2&> /dev/null
