@@ -31,7 +31,8 @@ steps:
   displayName: 'Run a multi-line script'
 
 - script: |
-    scripts/parse_biodata.sh -d $(pwd)/biodata/data -o content -y
+    BASE_ADDRESS="http://ebmblast.z20.web.core.windows.net"
+    scripts/parse_biodata.sh -w $BASE_ADDRESS -d $(pwd)/biodata/data -o content -y
     ls -la content/bacteria
   displayName: 'Parse raw data results'
 

@@ -55,6 +55,7 @@ usage() {
   echo "   Usage: "
   echo "     [-d <input directory>] directory to search"
   echo "     [-o <output directory>] directory that files will be written to" 
+  echo "     [-w <base web address>] web address for results"
   echo "     [-y] ignore prompt and just run"
   exit 1
 }
@@ -68,17 +69,23 @@ for arg in "$@"; do
   esac
 done
 
-while getopts :d:o:y option
+while getopts w:d:o:y option
 do
   case "${option}"
   in
       d) INPUT_DIR=${OPTARG};;
+      w) WEB_ADDRESS=${OPTARG};;
       o) OUTPUT_DIR=${OPTARG};;
       y) IGNORE_PROMPT=true;;
       *) usage;;
   esac
 done
 shift "$(($OPTIND -1))"
+
+if [ -z $WEB_ADDRESS ]; then
+  echo "ERROR: Web address required with -w"
+  exit 1
+fi
 
 if [ -z $INPUT_DIR ]; then
   echo "ERROR: Input directory required."
@@ -117,7 +124,6 @@ fi
 # look in very specific locations.  This also assumes the data lives under a '/data' directory
 # as is defined in the find command below
 TYPES=( bacteria fungi insects plants )
-WEB_ADDRESS="http://ebmblast.z20.web.core.windows.net"
 for TYPE in "${TYPES[@]}"; do
   mkdir -p $OUTPUT_DIR/$TYPE
   while read -r COLLECTION; do
