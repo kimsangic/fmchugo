@@ -1,0 +1,14 @@
+baseURL = "https://bio-formatics.github.io/"
+languageCode = "en-us"
+title = "Bio-formatics"
+theme = "hugo-theme-learn"
+publishDir = "docs"
+
+[params]
+themeVariant = "devops"
+disableSearch = true
+editURL = "https://github.com/bio-formatics/bio-formatics.github.io/edit/master/content/"
+
+[outputs]
+home = ["HTML", "RSS", "JSON"]
+

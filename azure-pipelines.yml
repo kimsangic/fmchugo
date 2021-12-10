@@ -1,0 +1,34 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+steps:
+- task: AzureKeyVault@1
+  inputs:
+    azureSubscription: 'BLAST'
+    KeyVaultName: 'proj4983-kv'
+    SecretsFilter: 'SP-CLIENTID,SP-PASSWORD,SP-TENANTID,SP-SUBSCRIPTIONID,SA-ACCESS-KEY'
+  displayName: 'Get key vault secrets'
+
+- script: |
+    wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    sudo apt-get update
+    sudo apt-get install blobfuse
+    WHOAMI=$(whoami)
+    sudo mkdir /mnt/ramdisk
+    sudo mount -t tmpfs -o size=16g tmpfs /mnt/ramdisk
+    sudo mkdir -p /mnt/ramdisk/blobfusetmp
+    sudo chown $WHOAMI /mnt/ramdisk/blobfusetmp
+    export AZURE_STORAGE_ACCOUNT=ebmblast
+    export AZURE_STORAGE_ACCESS_KEY="$(SA-ACCESS-KEY)"
+    mkdir biodata
+    sudo -E blobfuse biodata --container-name=\$web --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
+    sleep 10
+    ls -la biodata
+  displayName: 'Run a multi-line script'
+
+- script: |
+    scripts/parse_biodata.sh -d $(pwd)/biodata/bacteria/data -o content
