@@ -55,6 +55,7 @@ usage() {
   echo "   Usage: "
   echo "     [-d <input directory>] directory to search"
   echo "     [-o <output directory>] directory that files will be written to" 
+  echo "     [-y] ignore prompt and just run"
   exit 1
 }
 
@@ -67,12 +68,13 @@ for arg in "$@"; do
   esac
 done
 
-while getopts :d:o: option
+while getopts :d:o:y option
 do
   case "${option}"
   in
       d) INPUT_DIR=${OPTARG};;
       o) OUTPUT_DIR=${OPTARG};;
+      y) IGNORE_PROMPT=true;;
       *) usage;;
   esac
 done
@@ -102,11 +104,12 @@ fi
 
 echo "INPUT DIRECTORY:      $INPUT_DIR"
 echo "OUTPUT DIRECTORY:     $OUTPUT_DIR"
-
-read -p "Are you sure you want to Proceed [y/N]?"
-if ! [[ "$REPLY" =~ ^[Yy]$ ]]; then
-    echo "Maybe next time!"
-    exit 1
+if [ $IGNORE_PROMPT != "true" ]; then
+  read -p "Are you sure you want to Proceed [y/N]?"
+  if ! [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      echo "Maybe next time!"
+      exit 1
+  fi
 fi
 
 # Look for these types of Genomes.  This can obviously change depending on what you want to do
