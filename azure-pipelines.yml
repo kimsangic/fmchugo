@@ -33,3 +33,10 @@ steps:
 - script: |
     scripts/parse_biodata.sh -d $(pwd)/biodata -o content -y
     ls -la content/bacteria
+  displayName: 'Parse raw data results'
+
+- script: |
+    docker run --rm -it -v $(pwd):/src klakegg/hugo:latest
+    ls -la docs
+  displayName: 'Run Website Generator'
+
