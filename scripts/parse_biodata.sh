@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/bash -x
 
 # This script will parse a tree structure that is passed in on the command line looking for datasets
 
@@ -30,25 +30,25 @@ gets() {
   printf -v "$_ref" '%s' "${_result[*]}"
 }
 
-# echo "Check program requirements..."
-# (
-#   set +e
-#   programs=( sed realpath find )
-#   missing=0
-#   for i in ${programs[@]}; do
-#       command -v $i 2&> /dev/null
-#       if [ $? -eq 0 ]; then
-#           echo " * Found $i"
-#       else
-#           echo " * ERROR: missing $i"
-#           missing=1
-#       fi
-#   done
-#   if [[ "$missing" -ne 0 ]]; then
-#       echo "Missing required commands"
-#       exit 1
-#   fi
-# )
+echo "Check program requirements..."
+(
+  set +e
+  programs=( sed realpath find )
+  missing=0
+  for i in ${programs[@]}; do
+      command -v $i 2&> /dev/null
+      if [ $? -eq 0 ]; then
+          echo " * Found $i"
+      else
+          echo " * ERROR: missing $i"
+          missing=1
+      fi
+  done
+  if [[ "$missing" -ne 0 ]]; then
+      echo "Missing required commands"
+      exit 1
+  fi
+)
 
 usage() {
   echo "`basename $0`"
@@ -104,7 +104,7 @@ fi
 
 echo "INPUT DIRECTORY:      $INPUT_DIR"
 echo "OUTPUT DIRECTORY:     $OUTPUT_DIR"
-if [ $IGNORE_PROMPT -ne "true" ]; then
+if [ $IGNORE_PROMPT != "true" ]; then
   read -p "Are you sure you want to Proceed [y/N]?"
   if ! [[ "$REPLY" =~ ^[Yy]$ ]]; then
       echo "Maybe next time!"
