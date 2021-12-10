@@ -36,7 +36,7 @@ steps:
   displayName: 'Parse raw data results'
 
 - script: |
-    docker run --rm -it -v $(pwd):/src klakegg/hugo:latest
+    docker run --rm -v $(pwd):/src klakegg/hugo:latest
     ls -la docs
   displayName: 'Run Website Generator'
 
