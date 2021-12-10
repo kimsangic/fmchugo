@@ -117,7 +117,7 @@ fi
 # look in very specific locations.  This also assumes the data lives under a '/data' directory
 # as is defined in the find command below
 TYPES=( bacteria fungi insects plants )
-WEB_ADDRESS="http://fmcbioinformatics.eastus2.cloudapp.azure.com"
+WEB_ADDRESS="http://ebmblast.z20.web.core.windows.net"
 for TYPE in "${TYPES[@]}"; do
   mkdir -p $OUTPUT_DIR/$TYPE
   while read -r COLLECTION; do
