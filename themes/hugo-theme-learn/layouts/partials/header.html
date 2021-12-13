@@ -92,7 +92,7 @@
         {{ end }}
         <div id="body-inner">
           {{if and (not .IsHome) (not .Params.chapter) }}
-            {{ partial "genome.html" . }}
+            {{ partial "page.html" . }}
           {{end}}
         {{define "breadcrumb"}}
           {{$parent := .page.Parent }}
