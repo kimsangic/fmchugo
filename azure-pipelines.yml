@@ -44,8 +44,6 @@ steps:
 - script: |
     az login --service-principal -u "$(SP-CLIENTID)" -p "$(SP-PASSWORD)" --tenant "$(SP-TENANTID)"
     # Don't delete index.html or index.xml under bacteria.  These are category pages
-    az storage blob lease acquire --blob-name "bacteria/index.html"--container-name \$web --account-name  ebmblast --lease-duration "20"
-    az storage blob lease acquire --blob-name "bacteria/index.xml"--container-name \$web --account-name  ebmblast --lease-duration "20"
     az storage blob delete-batch --source \$web --account-name ebmblast --pattern bacteria/*
     az storage blob upload-batch --destination \$web --account-name ebmblast --source docs 
   displayName: 'Upload results'
