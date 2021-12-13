@@ -1,0 +1,9 @@
+<h1>
+  {{ if eq .Kind "taxonomy" }}
+    {{.Kind}} ::
+  {{ end }}
+  {{.Title}}
+</h1>
+<div id="content">
+  {{.Description}}
+</div>
