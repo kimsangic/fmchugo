@@ -92,50 +92,8 @@
         {{ end }}
         <div id="body-inner">
           {{if and (not .IsHome) (not .Params.chapter) }}
-            <h1>
-              {{ if eq .Kind "taxonomy" }}
-                {{.Kind}} ::
-              {{ end }}
-              {{.Title}}
-            </h1>
-            <div id="content">
-              <h4>PreAssembly: FastQC</h4>
-              <div>
-                <a href="{{.Params.fastqc_forward_reads}}">Illumina Forward Reads</a>
-              </div>
-              <div>
-                <a href="{{.Params.fastqc_reverse_reads}}">Illumina Reverse Reads</a>
-              </div>
-
-              <h4>Genome Download</h4>
-              <div>
-                <a href="{{.Params.download_genome_sequences}}">Genome Sequences</a>
-              </div>
-              <div>
-                <a href="{{.Params.download_genbank}}">Genbank</a>
-              </div>
-              <div>
-                <a href="{{.Params.download_transcript_sequences}}">Transcript Sequences</a>
-              </div>
-
-              <h4>Assembly Statistics</h4>
-              <div>
-                <a href="{{.Params.statistics_quast}}">Quast</a>
-              </div>
-              <div>
-                <a href="{{.Params.statistics_busco}}">Busco</a>
-              </div>
-
-              <h4>Taxonomic Classification</h4>
-              <div>
-                <a href="{{.Params.classification_phyloflash}}">Phyloflash</a>
-              </div>
-              <div>
-                <a href="{{.Params.classification_kraken}}">Kraken</a>
-              </div>
-            </div>
+            {{ partial "genome.html" . }}
           {{end}}
-
         {{define "breadcrumb"}}
           {{$parent := .page.Parent }}
           {{ if $parent }}
