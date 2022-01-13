@@ -5,12 +5,18 @@ pool:
   vmImage: 'ubuntu-18.04'
 
 steps:
-- task: AzureKeyVault@1
+- task: AzureCLI@2
+  displayName: 'runtime_vars'
+  name: runtime_vars
   inputs:
     azureSubscription: 'BLAST'
-    KeyVaultName: 'proj4983-kv'
-    SecretsFilter: 'SP-CLIENTID,SP-PASSWORD,SP-TENANTID,SP-SUBSCRIPTIONID,SA-ACCESS-KEY'
-  displayName: 'Get key vault secrets'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az --version
+      az account show
+      SA_ACCESS_KEY=$(az storage account keys list --account-name $(DATA_STORAGE_ACCOUNT) | jq -r ".[0].value")
+      echo "##vso[task.setvariable variable=SA_TOKEN;isOutput=true]$SA_ACCESS_KEY"
 
 - script: |
     wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
@@ -22,8 +28,8 @@ steps:
     sudo mount -t tmpfs -o size=16g tmpfs /mnt/ramdisk
     sudo mkdir -p /mnt/ramdisk/blobfusetmp
     sudo chown $WHOAMI /mnt/ramdisk/blobfusetmp
-    export AZURE_STORAGE_ACCOUNT=ebmblast
-    export AZURE_STORAGE_ACCESS_KEY="$(SA-ACCESS-KEY)"
+    export AZURE_STORAGE_ACCOUNT=$(DATA_STORAGE_ACCOUNT)
+    export AZURE_STORAGE_ACCESS_KEY="$(runtime_vars.SA_TOKEN)"
     mkdir biodata
     sudo -E blobfuse biodata --container-name=\$web --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
     sleep 10
@@ -31,9 +37,9 @@ steps:
   displayName: 'Run a multi-line script'
 
 - script: |
-    BASE_ADDRESS="https://ebmblast.z20.web.core.windows.net"
+    BASE_ADDRESS=$(WEB_ADDRESS)
     scripts/parse_biodata.sh -w $BASE_ADDRESS -d $(pwd)/biodata/data -o content -y
-    ls -la content/bacteria
+    ls -la content
   displayName: 'Parse raw data results'
 
 - script: |
@@ -41,9 +47,15 @@ steps:
     ls -la docs
   displayName: 'Run Website Generator'
 
-- script: |
-    az login --service-principal -u "$(SP-CLIENTID)" -p "$(SP-PASSWORD)" --tenant "$(SP-TENANTID)"
-    # Don't delete index.html or index.xml under bacteria.  These are category pages
-    az storage blob delete-batch --source \$web --account-name ebmblast --pattern bacteria/*
-    az storage blob upload-batch --destination \$web --account-name ebmblast --source docs 
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'BLAST'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az storage blob delete-batch --source \$web --account-name $(WEB_STORAGE_ACCOUNT) --pattern bacteria/*
+      az storage blob delete-batch --source \$web --account-name $(WEB_STORAGE_ACCOUNT) --pattern fungi/*
+      az storage blob delete-batch --source \$web --account-name $(WEB_STORAGE_ACCOUNT) --pattern insects/*
+      az storage blob delete-batch --source \$web --account-name $(WEB_STORAGE_ACCOUNT) --pattern plants/*
+      az storage blob upload-batch --destination \$web --account-name $(WEB_STORAGE_ACCOUNT) --source docs 
   displayName: 'Upload results'
