@@ -16,7 +16,7 @@ steps:
       az --version
       az account show
       SA_ACCESS_KEY=$(az storage account keys list --account-name $(DATA_STORAGE_ACCOUNT) | jq -r ".[0].value")
-      echo "##vso[task.setvariable variable=SA_TOKEN;isOutput=true]$SA_ACCESS_KEY"
+      echo "##vso[task.setvariable variable=SA_ACCESS_KEY;isOutput=true]$SA_ACCESS_KEY"
 
 - script: |
     wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
