@@ -15,7 +15,7 @@ steps:
     inlineScript: |
       az --version
       az account show
-      SA_ACCESS_KEY=$(az storage account keys list --account-name $(DATA_STORAGE_ACCOUNT) | jq -r ".[0].value")
+      SA_ACCESS_KEY=$(az storage account keys list --account-name $(DATA_STORAGE_ACCOUNT) | jq -r ".[1].value")
       echo "##vso[task.setvariable variable=SA_ACCESS_KEY;isOutput=true]$SA_ACCESS_KEY"
 
 - script: |
