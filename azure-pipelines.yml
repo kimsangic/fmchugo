@@ -29,7 +29,7 @@ steps:
     sudo mkdir -p /mnt/ramdisk/blobfusetmp
     sudo chown $WHOAMI /mnt/ramdisk/blobfusetmp
     export AZURE_STORAGE_ACCOUNT=$(DATA_STORAGE_ACCOUNT)
-    export AZURE_STORAGE_ACCESS_KEY="$(runtime_vars.SA_TOKEN)"
+    export AZURE_STORAGE_ACCESS_KEY="$(runtime_vars.SA_ACCESS_KEY)"
     mkdir biodata
     sudo -E blobfuse biodata --container-name=\$web --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
     sleep 10
