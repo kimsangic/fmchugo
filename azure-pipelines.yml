@@ -40,7 +40,7 @@ steps:
 
 - script: |
     BASE_ADDRESS=$(WEB_ADDRESS)
-    scripts/parse_biodata.sh -w $BASE_ADDRESS -d $(pwd)/biodata/data -o content -y
+    scripts/parse_biodata.sh -w $BASE_ADDRESS -d $(pwd)/biodata -o content -y
     ls -la content
   displayName: 'Parse raw data results'
 
