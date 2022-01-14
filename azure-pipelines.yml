@@ -33,7 +33,7 @@ steps:
     echo AZURE_STORAGE_ACCESS_KEY=$AZURE_STORAGE_ACCESS_KEY
     echo AZURE_STORAGE_ACCOUNT=$AZURE_STORAGE_ACCOUNT
     mkdir biodata
-    sudo -E blobfuse biodata --container-name=\$web --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
+    sudo -E blobfuse biodata --container-name=data --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
     sleep 10
     ls -la biodata
   displayName: 'Run a multi-line script'
