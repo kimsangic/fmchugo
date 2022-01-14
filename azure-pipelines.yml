@@ -9,7 +9,7 @@ steps:
   displayName: 'runtime_vars'
   name: runtime_vars
   inputs:
-    azureSubscription: 'BLAST'
+    azureSubscription: 'fmcgenomicserver'
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
@@ -49,7 +49,7 @@ steps:
 
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'BLAST'
+    azureSubscription: 'fmcgenomicserver'
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
