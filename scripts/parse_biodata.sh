@@ -150,9 +150,9 @@ classification_kraken: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/kraken/$COLLEC
 classification_krona: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/krona/$COLLECTION.kraken.krona.html\"
 classification_mash: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/mash/$COLLECTION.mash.txt\"
 classification_mlst: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/mlst/$COLLECTION.mlst.txt\"
-pathogenesity_plasmidseeker: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/plasmidseeker/$COLLECTION.plasmidseeker.txt\"
-pathogenesity_abricate: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/abricate/$COLLECTION.abricate.txt\"
-pathogenesity_antismash: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/antismash/$COLLECTION.index.html\"
+pathogenecity_plasmidseeker: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/plasmidseeker/$COLLECTION.plasmidseeker.txt\"
+pathogenecity_abricate: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/abricate/$COLLECTION.abricate.txt\"
+pathogenecity_antismash: \"$WEB_ADDRESS/data/$TYPE/data/$COLLECTION/antismash/$COLLECTION.index.html\"
 ---
 EOS
       printf '%s\n' "$OUTPUT_MD" > $OUTPUT_DIR/$TYPE/$COLLECTION/_index.md
