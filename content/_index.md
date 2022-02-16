@@ -3,7 +3,7 @@ title = "FMC Bioinformatics Server"
 date = 2020-08-10T13:44:49-04:00
 +++
 
-# Welcome FMC Bacteria Genome Respository
+# FMC Bacteria Genome Respository
 
 ## Useful Links
 * [NCBI (National Center for Biotechnology Information)](https://www.ncbi.nlm.nih.gov/): a series of databases relevant to biotechnology and biomedicine and is an important resource for bioinformatics tools and services.
