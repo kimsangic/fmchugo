@@ -64,7 +64,8 @@ a:hover {
     background-color: var(--MAIN-LINK-HOVER-color);
 }
 #logo {
-  font-family: "Novacento Sans Wide", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
+#  font-family: "Novacento Sans Wide", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
+  font-family: "Novacento Sans Wide", "Helvetica", "Tahoma", "Geneva", "Arial", arial;
   font-size: 2rem;
   font-weight: bold;
 }
