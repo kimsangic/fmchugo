@@ -3,16 +3,7 @@ title = "FMC Bioinformatics Server"
 date = 2020-08-10T13:44:49-04:00
 +++
 
-# Welcome!
-
-## What is this site?
-Describe what this site is about.
-
-## Why is this site useful?
-Give a brief overview of why this site would be useful
-
-## How you should use this site?
-Describe the best practice for using this site
+# Welcome FMC Bacteria Genome Respository
 
 ## Useful Links
 * [NCBI (National Center for Biotechnology Information)](https://www.ncbi.nlm.nih.gov/): a series of databases relevant to biotechnology and biomedicine and is an important resource for bioinformatics tools and services.
