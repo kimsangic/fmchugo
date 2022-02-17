@@ -6,5 +6,3 @@ chapter = true
 +++
 
 # Bacteria
-
-Lorem Ipsum.
