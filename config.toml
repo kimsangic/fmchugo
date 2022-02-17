@@ -6,7 +6,7 @@ publishDir = "docs"
 
 [params]
 themeVariant = "devops"
-disableSearch = true
+disableSearch = false
 
 [outputs]
 home = ["HTML", "RSS", "JSON"]
