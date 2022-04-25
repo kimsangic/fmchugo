@@ -46,7 +46,7 @@ steps:
     export AZURE_STORAGE_ACCOUNT=$(DATA_STORAGE_ACCOUNT)
     export AZURE_STORAGE_ACCESS_KEY="$(SA_TOKEN)"
     mkdir biodata
-    sudo -E blobfuse biodata --container-name=data --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
+    sudo -E blobfuse biodata --container-name=cromwell --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
     sleep 10
     pwd
     ls -la
