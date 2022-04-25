@@ -4,43 +4,59 @@ trigger:
 pool:
   vmImage: 'ubuntu-18.04'
 
+variables:
+  imageName: 'fmc/hugo'
+  containerRegistryConnection: 'fmcbioinformatics' #Setup a new container connection in ADO with this name
+  containerRegistryName: 'fmcbioinformatics'
+  azureSubscription: 'fmcgenomicserver'
+  tag: '$(Build.BuildId)'
+
 steps:
 - task: AzureCLI@2
   displayName: 'runtime_vars'
   name: runtime_vars
   inputs:
-    azureSubscription: 'fmcgenomicserver'
+    azureSubscription: $(azureSubscription)
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
       az --version
       az account show
-      SA_ACCESS_KEY=$(az storage account keys list --account-name $(DATA_STORAGE_ACCOUNT) | jq -r ".[1].value")
-      echo "##vso[task.setvariable variable=SA_ACCESS_KEY;isOutput=true]$SA_ACCESS_KEY"
+      SA_ACCESS_KEY=$(az storage account keys list --account-name $(DATA_STORAGE_ACCOUNT) | jq -r ".[0].value")
+      echo "##vso[task.setvariable variable=SA_TOKEN]$SA_ACCESS_KEY"
+      SKU=$(az acr show -n $(containerRegistryName) --query sku.name -o tsv)
+      if [ "$SKU" == "Premium" ]; then
+        echo "premium SKU"
+        echo "##vso[task.setvariable variable=SKU]$SKU"
+      else
+        echo "non-premium SKU"
+        echo "##vso[task.setvariable variable=SKU]$SKU"
+      fi
 
 - script: |
     wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
     sudo dpkg -i packages-microsoft-prod.deb
     sudo apt-get update
-    sudo apt-get install blobfuse
+    sudo apt-get install blobfuse tree
     WHOAMI=$(whoami)
     sudo mkdir /mnt/ramdisk
     sudo mount -t tmpfs -o size=16g tmpfs /mnt/ramdisk
     sudo mkdir -p /mnt/ramdisk/blobfusetmp
     sudo chown $WHOAMI /mnt/ramdisk/blobfusetmp
     export AZURE_STORAGE_ACCOUNT=$(DATA_STORAGE_ACCOUNT)
-    export AZURE_STORAGE_ACCESS_KEY="$(runtime_vars.SA_ACCESS_KEY)"
-    echo AZURE_STORAGE_ACCESS_KEY=$AZURE_STORAGE_ACCESS_KEY
-    echo AZURE_STORAGE_ACCOUNT=$AZURE_STORAGE_ACCOUNT
+    export AZURE_STORAGE_ACCESS_KEY="$(SA_TOKEN)"
     mkdir biodata
-    sudo -E blobfuse biodata --container-name=\$web --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
+    sudo -E blobfuse biodata --container-name=data --tmp-path=/mnt/ramdisk/blobfusetmp -o allow_other -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --log-level=LOG_DEBUG
     sleep 10
-    ls -la biodata
+    pwd
+    ls -la
+    tree biodata
   displayName: 'Run a multi-line script'
 
 - script: |
     BASE_ADDRESS=$(WEB_ADDRESS)
-    scripts/parse_biodata.sh -w $BASE_ADDRESS -d $(pwd)/biodata/data -o content -y
+    ls -la $(pwd)/biodata/data
+    scripts/parse_biodata.sh -w $BASE_ADDRESS -d $(pwd)/biodata -o content -y
     ls -la content
   displayName: 'Parse raw data results'
 
@@ -50,11 +66,41 @@ steps:
   displayName: 'Run Website Generator'
 
 - task: AzureCLI@2
+  displayName: 'Add agent IP to firewall whitelist'
+  condition: and(succeeded(), eq(variables['SKU'], 'Premium'))
   inputs:
-    azureSubscription: 'fmcgenomicserver'
-    scriptType: bash
-    scriptLocation: inlineScript
+    azureSubscription: $(azureSubscription)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
     inlineScript: |
-      az storage blob delete-batch --source \$web --account-name $(WEB_STORAGE_ACCOUNT) --pattern bacteria/*
-      az storage blob upload-batch --destination \$web --account-name $(WEB_STORAGE_ACCOUNT) --source docs 
-  displayName: 'Upload results'
+      AGENT_IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+      if [ -z "$(az acr network-rule list --name $(containerRegistryName) | grep ${AGENT_IP})"]
+      then 
+        echo "Adding agent IP '${AGENT_IP}' to Azure Container Registry '$(containerRegistryName)' firewall whitelist"
+        az acr network-rule add --name $(containerRegistryName) --ip-address $AGENT_IP
+      else
+        echo "Agent is already whitelisted; skipping."
+      fi
+
+- task: Docker@2
+  displayName: Build and push an image to container registry
+  inputs:
+    command: buildAndPush
+    repository: $(imageName)
+    dockerfile: '**/Dockerfile' 
+    containerRegistry: $(containerRegistryConnection)
+    tags: |
+      $(tag)
+      latest
+
+- task: AzureCLI@2
+  displayName: 'Remove agent IP from firewall whitelist'
+  condition: and(succeeded(), eq(variables['SKU'], 'Premium'))
+  inputs:
+    azureSubscription: $(azureSubscription)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      AGENT_IP="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+      echo "Removing agent IP '${AGENT_IP}' from Azure Container Registry '$(containerRegistryName)' firewall whitelist"
+      az acr network-rule remove --name $(containerRegistryName) --ip-address $AGENT_IP --only-show-errors --output none
