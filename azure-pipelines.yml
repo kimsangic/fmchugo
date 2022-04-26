@@ -56,7 +56,7 @@ steps:
 - script: |
     BASE_ADDRESS=$(WEB_ADDRESS)
     ls -la $(pwd)/biodata/data
-    scripts/parse_biodata.sh -w $BASE_ADDRESS -d $(pwd)/biodata -o content -y
+    scripts/parse_biodata.sh -w $BASE_ADDRESS -d $(pwd)/biodata/data -o content -y
     ls -la content
   displayName: 'Parse raw data results'
 
